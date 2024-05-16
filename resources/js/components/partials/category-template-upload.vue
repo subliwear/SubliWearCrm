@@ -1,0 +1,165 @@
+<template>
+    <div v-for="image in images"  class="category-template flex gap-20">
+        <div class="preview rounded-lg mb-4" :style="{
+            width: image.width/2 + 'px',
+            height: image.height/2 + 'px',
+            backgroundImage: 'url('+image.preview+')',
+            backgroundSize: 'contain'
+        }"
+            @dragover="unhighlightAll"
+        >
+            <div class="prblock" v-for="block in image.blocks" :class="[block.is_loading==true?'loading':'', block.is_used==true?'used':'']" :style="{
+                left: Math.min(block.startx/2, block.endx/2)+'px', 
+                top: Math.min(block.starty/2, block.endy/2)+'px', 
+                width: Math.abs(block.endx/2-block.startx/2)+'px', 
+                height: Math.abs(block.endy/2-block.starty/2)+'px',
+                backgroundImage: block.is_used?'url('+block.preview+')':'none',
+                backgroundSize: 'cover',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
+            }" 
+                @dragenter.prevent="setActive" 
+                @dragover.prevent="setActive" 
+                @dragleave.prevent="setInactive" 
+                @drop.prevent="event=>onDrop(event, block)"
+                @click="initFile(block)"
+            >
+                {{ block.is_used!==true?block.title:'' }}
+            </div>
+        </div>
+        <div class="blocks">
+            <div v-for="block in image.blocks" class="flex items-center py-2 gap-10">
+                <div>
+                    {{ block.title }}:
+                </div>
+                <div>
+                    <div class="w-16 h-16 flex border border-slate-100 rounded overflow-hidden">
+                        <img :src="block.preview" v-if="block.is_used" class=" object-fit  w-full">
+                        <img v-else class="w-full object-fit" src='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100" height="100" viewBox="0 0 100 100"><rect width="100%" height="100%" fill="%23DDDDDD"/><path d="M25.00 43.96L27.01 43.96L27.01 56.25L25.84 56.25Q25.57 56.25 25.38 56.16Q25.20 56.07 25.03 55.86L25.03 55.86L18.61 47.66Q18.66 48.22 18.66 48.70L18.66 48.70L18.66 56.25L16.65 56.25L16.65 43.96L17.85 43.96Q17.99 43.96 18.10 43.97Q18.21 43.98 18.29 44.02Q18.37 44.06 18.44 44.13Q18.52 44.20 18.61 44.32L18.61 44.32L25.06 52.55Q25.03 52.25 25.01 51.96Q25.00 51.67 25.00 51.43L25.00 51.43L25.00 43.96ZM33.28 47.39L33.28 47.39Q34.25 47.39 35.04 47.70Q35.83 48.02 36.40 48.60Q36.97 49.18 37.27 50.01Q37.58 50.84 37.58 51.87L37.58 51.87Q37.58 52.91 37.27 53.74Q36.97 54.57 36.40 55.16Q35.83 55.75 35.04 56.06Q34.25 56.38 33.28 56.38L33.28 56.38Q32.30 56.38 31.50 56.06Q30.70 55.75 30.14 55.16Q29.57 54.57 29.26 53.74Q28.95 52.91 28.95 51.87L28.95 51.87Q28.95 50.84 29.26 50.01Q29.57 49.18 30.14 48.60Q30.70 48.02 31.50 47.70Q32.30 47.39 33.28 47.39ZM33.28 54.76L33.28 54.76Q34.36 54.76 34.89 54.03Q35.41 53.30 35.41 51.89L35.41 51.89Q35.41 50.48 34.89 49.74Q34.36 49.00 33.28 49.00L33.28 49.00Q32.17 49.00 31.64 49.74Q31.11 50.48 31.11 51.89L31.11 51.89Q31.11 53.29 31.64 54.02Q32.17 54.76 33.28 54.76ZM42.09 56.38L42.09 56.38Q40.95 56.38 40.34 55.74Q39.74 55.10 39.74 53.97L39.74 53.97L39.74 49.10L38.84 49.10Q38.67 49.10 38.55 48.99Q38.44 48.88 38.44 48.66L38.44 48.66L38.44 47.82L39.84 47.59L40.28 45.21Q40.32 45.04 40.44 44.95Q40.56 44.86 40.75 44.86L40.75 44.86L41.84 44.86L41.84 47.60L44.16 47.60L44.16 49.10L41.84 49.10L41.84 53.83Q41.84 54.23 42.04 54.46Q42.24 54.69 42.58 54.69L42.58 54.69Q42.78 54.69 42.91 54.65Q43.04 54.60 43.14 54.55Q43.24 54.50 43.31 54.45Q43.39 54.40 43.47 54.40L43.47 54.40Q43.56 54.40 43.62 54.45Q43.68 54.50 43.75 54.59L43.75 54.59L44.38 55.61Q43.92 55.99 43.32 56.19Q42.73 56.38 42.09 56.38ZM55.05 47.53L57.15 47.53L57.15 56.25L55.87 56.25Q55.45 56.25 55.34 55.87L55.34 55.87L55.20 55.17Q54.66 55.71 54.02 56.05Q53.37 56.38 52.49 56.38L52.49 56.38Q51.78 56.38 51.23 56.14Q50.68 55.90 50.31 55.46Q49.94 55.02 49.74 54.41Q49.55 53.80 49.55 53.07L49.55 53.07L49.55 47.53L51.65 47.53L51.65 53.07Q51.65 53.87 52.02 54.31Q52.39 54.74 53.13 54.74L53.13 54.74Q53.68 54.74 54.15 54.50Q54.63 54.26 55.05 53.83L55.05 53.83L55.05 47.53ZM65.02 48.47L64.55 49.23Q64.46 49.36 64.37 49.42Q64.28 49.47 64.13 49.47L64.13 49.47Q63.98 49.47 63.80 49.39Q63.63 49.30 63.40 49.20Q63.17 49.09 62.88 49.01Q62.58 48.92 62.18 48.92L62.18 48.92Q61.56 48.92 61.21 49.18Q60.86 49.45 60.86 49.87L60.86 49.87Q60.86 50.15 61.04 50.34Q61.22 50.54 61.53 50.68Q61.83 50.82 62.21 50.94Q62.59 51.05 62.99 51.19Q63.38 51.33 63.77 51.50Q64.15 51.67 64.45 51.94Q64.75 52.21 64.93 52.58Q65.12 52.96 65.12 53.48L65.12 53.48Q65.12 54.11 64.89 54.65Q64.67 55.18 64.22 55.56Q63.78 55.95 63.13 56.17Q62.48 56.38 61.63 56.38L61.63 56.38Q61.18 56.38 60.75 56.30Q60.32 56.22 59.93 56.08Q59.53 55.93 59.20 55.74Q58.86 55.54 58.61 55.31L58.61 55.31L59.09 54.51Q59.18 54.37 59.31 54.29Q59.44 54.22 59.63 54.22L59.63 54.22Q59.83 54.22 60.00 54.33Q60.18 54.44 60.41 54.56Q60.64 54.69 60.95 54.80Q61.26 54.91 61.73 54.91L61.73 54.91Q62.11 54.91 62.38 54.82Q62.64 54.73 62.82 54.59Q62.99 54.45 63.07 54.25Q63.15 54.06 63.15 53.86L63.15 53.86Q63.15 53.55 62.97 53.36Q62.79 53.16 62.49 53.02Q62.18 52.87 61.80 52.76Q61.41 52.64 61.01 52.51Q60.60 52.37 60.22 52.19Q59.83 52.01 59.53 51.73Q59.23 51.45 59.04 51.04Q58.86 50.63 58.86 50.05L58.86 50.05Q58.86 49.52 59.07 49.03Q59.29 48.55 59.70 48.19Q60.11 47.82 60.73 47.61Q61.34 47.39 62.15 47.39L62.15 47.39Q63.05 47.39 63.79 47.69Q64.53 47.99 65.02 48.47L65.02 48.47ZM68.36 50.88L72.32 50.88Q72.32 50.48 72.20 50.11Q72.09 49.75 71.86 49.48Q71.63 49.21 71.28 49.05Q70.92 48.90 70.46 48.90L70.46 48.90Q69.55 48.90 69.02 49.41Q68.50 49.93 68.36 50.88L68.36 50.88ZM73.71 52.15L68.31 52.15Q68.36 52.82 68.55 53.31Q68.74 53.80 69.04 54.12Q69.35 54.44 69.77 54.59Q70.19 54.75 70.70 54.75L70.70 54.75Q71.21 54.75 71.58 54.63Q71.95 54.51 72.23 54.37Q72.50 54.22 72.71 54.11Q72.92 53.99 73.12 53.99L73.12 53.99Q73.38 53.99 73.51 54.18L73.51 54.18L74.11 54.95Q73.76 55.36 73.33 55.63Q72.89 55.91 72.42 56.07Q71.95 56.24 71.46 56.31Q70.97 56.38 70.51 56.38L70.51 56.38Q69.61 56.38 68.82 56.07Q68.04 55.77 67.46 55.18Q66.89 54.59 66.55 53.72Q66.22 52.85 66.22 51.70L66.22 51.70Q66.22 50.81 66.51 50.02Q66.80 49.23 67.34 48.65Q67.88 48.07 68.66 47.73Q69.44 47.39 70.41 47.39L70.41 47.39Q71.24 47.39 71.93 47.65Q72.63 47.92 73.13 48.42Q73.63 48.93 73.92 49.66Q74.20 50.40 74.20 51.34L74.20 51.34Q74.20 51.82 74.10 51.98Q74.00 52.15 73.71 52.15L73.71 52.15ZM81.25 53.66L81.25 49.75Q80.89 49.32 80.47 49.14Q80.05 48.96 79.57 48.96L79.57 48.96Q79.09 48.96 78.71 49.14Q78.33 49.32 78.05 49.68Q77.78 50.04 77.64 50.60Q77.49 51.16 77.49 51.91L77.49 51.91Q77.49 52.68 77.62 53.21Q77.74 53.74 77.97 54.08Q78.20 54.41 78.53 54.56Q78.86 54.71 79.27 54.71L79.27 54.71Q79.92 54.71 80.38 54.44Q80.84 54.16 81.25 53.66L81.25 53.66ZM81.25 43.62L83.35 43.62L83.35 56.25L82.07 56.25Q81.65 56.25 81.54 55.87L81.54 55.87L81.36 55.02Q80.83 55.63 80.15 56.00Q79.47 56.38 78.56 56.38L78.56 56.38Q77.84 56.38 77.25 56.08Q76.65 55.78 76.22 55.21Q75.79 54.65 75.56 53.82Q75.33 52.98 75.33 51.91L75.33 51.91Q75.33 50.94 75.59 50.11Q75.85 49.28 76.35 48.67Q76.84 48.05 77.53 47.71Q78.22 47.37 79.07 47.37L79.07 47.37Q79.81 47.37 80.32 47.59Q80.84 47.82 81.25 48.22L81.25 48.22L81.25 43.62Z" fill="%23999999"/></svg>' alt="">
+                    </div>
+                </div>
+                <div>
+                    <button v-if="block.is_used" @click.prevent="unuseBlock(block)" class="border border-red-600 px-2 py-1.2 rounded text-red-500 text-xs">&times; Remove logo</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <input type="file" ref="file" @change="handleFileInput" class="opacity-0">
+
+</template>
+<style scoped>
+    .preview{
+        position: relative;
+    }
+    .prblock{
+        position: absolute;
+        background: rgba(255,255,255,.3);
+        border: 1px dotted white;
+        color: #fff;
+        font-size: 12px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+    .prblock.hovered{
+        background-color: rgba(255,255,255,.8);
+    }
+    .prblock.used{
+        border: 0 !important;
+    }
+    .prblock.loading:before{
+        position: absolute;
+        display: block;
+        content: "";
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255,255,255,.7);
+        animation: loading 2s infinite;
+    }
+    @keyframes loading {
+        0%{
+            width: 0;
+        }
+        100%{
+            width: 100%
+        }
+    }
+</style>
+<script>
+    import axios from 'axios'
+    export default{
+        props: {
+            images: {
+                type: Array
+            },
+            project_id: {
+                type: String
+            }
+        },
+        data(){
+            return {
+                current_block: {}
+            }
+        },
+        watch: {
+            images: {
+                deep: true,
+                handler(){
+                    this.$emit('changed', this.images)
+                }
+            }
+        },
+        methods:{
+            handleFileInput(event){
+                if(event.target.files[0]){
+                    let fd = new FormData
+                    fd.append('file', event.target.files[0])
+                    fd.append('project_id', this.project_id)
+                    this.current_block.is_loading = true
+                    axios.post('/json/magic-upload-with-preview', fd, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    }).then(response=>{
+                        this.current_block.preview = response.data.image
+                        this.current_block.is_used = true
+                        this.current_block.is_loading = false
+                    })
+                }
+            },
+            initFile(block){
+                this.current_block = block
+                this.$refs.file.click()
+            },
+            unuseBlock(block){
+                block.preview = ''
+                block.is_used = false
+            },
+            setActive(event){
+                event.target.classList.add('hovered')
+            },
+            setInactive(event){
+                event.target.classList.remove('hovered')
+            },
+            onDrop(event, block){
+                this.setInactive(event)
+                let fd = new FormData
+                block.is_loading = true
+                fd.append('file', event.dataTransfer.files[0])
+                fd.append('project_id', this.project_id)
+                axios.post('/json/magic-upload-with-preview', fd, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }).then(response=>{
+                    block.preview = response.data.image
+                    block.is_used = true
+                    block.is_loading = false
+                })
+            }
+        }
+    }
+</script>
