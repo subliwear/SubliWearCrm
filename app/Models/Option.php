@@ -11,7 +11,7 @@ class Option extends Model
 
     public static function get(){
         $m = Option::first();
-        return $m;
+        return $m ?? null;
     }
 
     public function getlogo(){

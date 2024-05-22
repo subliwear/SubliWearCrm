@@ -14,6 +14,8 @@
               <div class="flex flex-wrap -mx-3">
                 <div class="max-w-full px-3 lg:w-1/2 lg:flex-none">
                   <div class="flex flex-col h-full">
+
+                   <!-- <h3>{{$option}}</h3> -->
                     <p class="pt-2 mb-1 font-semibold">{{$option->left_column_title1}}</p>
                     <h5 class="font-bold">{{$option->left_column_title2}}</h5>
                     <p class="mb-12">{{$option->left_column_text}}</p>

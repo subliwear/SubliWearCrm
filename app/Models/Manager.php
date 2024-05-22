@@ -10,7 +10,12 @@ class Manager extends Model
     use HasFactory;
 
     public function user(){
-        return $this->belongsTo('App\Models\User');
+        return $this->belongsTo('App\Models\User')->withDefault([
+            'name' => 'Unknown',
+            'email' => 'unknown@example.com',
+            // Ajoutez d'autres attributs d'utilisateur par défaut si nécessaire
+        ]);;
+
     }
 
     public function canTake(){

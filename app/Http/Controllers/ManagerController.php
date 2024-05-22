@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Mail;
 use App\Mail\SendPasswordToManager;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class ManagerController extends Controller
 {
@@ -39,9 +40,11 @@ class ManagerController extends Controller
         $u->save();
         Mail::to($u->email)->send(new SendPasswordToManager($u, $pwd));
         //TODO: send email to manager with his new password
+
         $m = new Manager;
         $m->user_id = $u->id;
         $m->save();
+        
         return redirect()->route('managers');
     }
 

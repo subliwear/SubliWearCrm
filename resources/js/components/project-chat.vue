@@ -71,7 +71,7 @@
                 </div>
             </div>
         </div>
-        <div v-if="show=='messages'" class="chat-body rounded-2xl bg-gray-50 p-6" style="box-shadow: inset 0 2px 5px rgba(0,0,0,.05);" @scroll="stopAutoJumping">
+        <div v-if="show=='messages'" class="chat-body rounded-2xl bg-gray-50 p-6"  @scroll="stopAutoJumping">
             <div class="message" v-for="message in messages">
                 <message v-if="message.type=='message'" :message="message" :customer="customer" :manager="manager" />
                 <upload v-if="message.type=='upload'" :message="message" :customer="customer" :manager="manager" />
@@ -231,10 +231,22 @@
                 axios.post('/json/order/'+this.project_id).then(response=>{
                     this.ordering = false
                     window.location = response.data.redirect
-                }).catch(()=>{
-                    this.ordering = false
-                    alert('Error happened. Please try again')
-                })
+                }).catch(error => {
+             this.ordering = false;
+             if (error.response) {
+                 // Si le serveur a répondu avec un code d'erreur
+                 console.error('Server responded with status:', error.response.status);
+                 alert('An error occurred. Please try again later.');
+             } else if (error.request) {
+                 // Si la requête a été faite mais aucune réponse n'a été reçue
+                 console.error('Request made but no response received.');
+                 alert('No response from the server. Please try again later.');
+             } else {
+                 // Si une erreur s'est produite lors de la configuration de la requête
+                 console.error('Error setting up the request:', error.message);
+                 alert('Error setting up the request. Please try again later.');
+             }
+            })
             },
             saveCode(){
                 if(this.is_ordered){
@@ -320,8 +332,8 @@
     .chat-hooter .filepond--root.my-pond.filepond--hopper{
         margin-bottom: 0;
     }
-    .loading,
-    .loading:after {
+    /* .loading, */
+    /* .loading:after {
     border-radius: 50%;
     width: 20px;
     height: 20px;
@@ -340,7 +352,7 @@
     transform: translateZ(0);
     -webkit-animation: load8 1.1s infinite linear;
     animation: load8 1.1s infinite linear;
-    }
+    } */
     @-webkit-keyframes load8 {
     0% {
         -webkit-transform: rotate(0deg);
@@ -361,13 +373,13 @@
         transform: rotate(360deg);
     }
     }
-    .loading2,
+    /* .loading2,
     .loading2:after {
     border-radius: 50%;
     width: 40px;
     height: 40px;
-    }
-    .loading2 {
+    } */
+    /* .loading2 {
     margin: 20px auto;
     font-size: 10px;
     position: relative;
@@ -381,6 +393,6 @@
     transform: translateZ(0);
     -webkit-animation: load8 1.1s infinite linear;
     animation: load8 1.1s infinite linear;
-    }
+    } */
 
 </style>

@@ -1,7 +1,7 @@
 <template>
     <label class="mb-2 ml-1 font-bold text-xs text-slate-700">Title of the project <small class="text-slate-400">(for your identification)</small></label>
     <div class="mb-4">
-        <input type="text" v-model="project.title" required class="focus:shadow-soft-primary-outline text-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:outline-none focus:transition-shadow" placeholder="Project title" aria-label="Name">
+        <input type="text"  v-model="project.title" required class="focus:shadow-soft-primary-outline text-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:outline-none focus:transition-shadow" placeholder="Project title" aria-label="Name">
     </div>
     <div class="p-0 border overflow-hidden rounded-xl patronage mb-2" v-for="(patronage, index) in project.patronages">
         <div class="bg-gray-50 border-b border-bottom p-4 patronage-header py-2.375 rounded-t-lg flex justify-between">
@@ -52,7 +52,7 @@
     </div>
     <div class="flex justify-between">
         <button @click="addPatronage" class="inline-block px-6 py-3 mt-6 mb-0 font-bold text-center text-white uppercase align-middle transition-all bg-transparent border-0 rounded-lg cursor-pointer shadow-soft-md bg-x-25 bg-150 leading-pro text-xs ease-soft-in tracking-tight-soft bg-gradient-to-tl from-green-600 to-lime-400 hover:scale-102 hover:shadow-soft-xs active:opacity-85">Add <span v-if="project.patronages.length>0">another</span> patronage</button>
-        <button @click="createProject" :disabled="creating || project.patronages.length==0" class="inline-block px-6 py-3 mt-6 mb-0 font-bold text-center text-lime-500 border-2 border-lime-500 uppercase align-middle transition-all bg-transparent border-0 rounded-lg cursor-pointer shadow-soft-md bg-x-25 bg-150 leading-pro text-xs ease-soft-in tracking-tight-soft  hover:scale-102 hover:shadow-soft-xs active:opacity-85 flex items-center justify-center">Create project <div class="loading33" v-if="creating"></div></button>
+        <button  @click="createProject" :disabled="creating || project.patronages.length==0" class="inline-block px-6 py-3 mt-6 mb-0 font-bold text-center text-lime-500 border-2 border-lime-500 uppercase align-middle transition-all bg-transparent border-0 rounded-lg cursor-pointer shadow-soft-md bg-x-25 bg-150 leading-pro text-xs ease-soft-in tracking-tight-soft  hover:scale-102 hover:shadow-soft-xs active:opacity-85 flex items-center justify-center">Create project <div class="loading33" v-if="creating"></div></button>
     </div>
 </template>
 <script>

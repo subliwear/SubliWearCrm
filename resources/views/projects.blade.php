@@ -65,14 +65,18 @@
                       @if(!auth()->user()->is_customer())
                         <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
                             @if(!empty($project->customer_id))
-                                <p class="mb-0 text-xs font-semibold leading-tight">{{$project->customer->user->name}}</p>
+                                <p class="mb-0 text-xs font-semibold leading-tight">{{$project->customer->user->name}}</p> 
+                            @endif
+                            @if(empty($project->customer_id))
+                                <p class="mb-0 text-xs font-semibold leading-tight">No Data</p> 
                             @endif
                         </td>
                       @endif
                       @if(!auth()->user()->is_manager())
                         <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
                             @if(!empty($project->manager_id))
-                                <p class="mb-0 text-xs font-semibold leading-tight">{{$project->manager->user->name}}</p>
+                                <p class="mb-0 text-xs font-semibold leading-tight">{{$project->manager->user->name}}</p>  
+
                             @endif
                         </td>
                       @endif

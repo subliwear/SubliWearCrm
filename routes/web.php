@@ -160,7 +160,8 @@ Route::middleware('auth')->group(function () {
         Route::get('status/{project}', [ProjectController::class, 'jsonOrderStatus']);
         Route::post('status/{project}', [ProjectController::class, 'jsonOrderChangeStatus']);
 
-        Route::post('magic-upload-with-preview', [UploadController::class, 'magic_upload']);
+        Route::match(['get', 'post'], 'magic-upload-with-preview', [UploadController::class, 'magic_upload']);
+
     });
 });
 
