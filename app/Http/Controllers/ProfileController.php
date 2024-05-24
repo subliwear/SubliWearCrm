@@ -67,7 +67,7 @@ class ProfileController extends Controller
             'message'=>'required'
         ]);
 
-        Mail::to(env('ADMIN_EMAIL'))->send(new SupportMessage($request->subject, $request->message, auth()->user()));
+        Mail::to(env('MAIL_FROM_ADDRESS'))->send(new SupportMessage($request->subject, $request->message, auth()->user()));
         Mail::to(auth()->user())->send(new SupportMessageCustomer($request->subject, $request->message));
         return redirect()->route('dashboard');
     }

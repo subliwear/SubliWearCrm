@@ -28,7 +28,7 @@ class SupportMessage extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Support Message',
+            subject: $this->subject,
         );
     }
 
