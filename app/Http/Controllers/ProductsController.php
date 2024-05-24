@@ -283,4 +283,6 @@ class ProductsController extends Controller
         $p = Patronage::findOrFail($request->id);
         return response()->json($p);
     }
+    
+
 }

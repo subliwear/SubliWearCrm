@@ -163,6 +163,10 @@ Route::middleware('auth')->group(function () {
         Route::match(['get', 'post'], 'magic-upload-with-preview', [UploadController::class, 'magic_upload']);
 
     });
+    
+
 });
+
+Route::get('/get-image/{projectId}', [UploadController::class, 'getImage']);
 
 require __DIR__.'/auth.php';

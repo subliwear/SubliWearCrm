@@ -1,4 +1,6 @@
 <template>
+    
+    
     <div v-for="image in images"  class="category-template flex gap-20">
         <div class="preview rounded-lg mb-4" :style="{
             width: image.width/2 + 'px',
@@ -28,9 +30,10 @@
             </div>
         </div>
         <div class="blocks">
+            
             <div v-for="block in image.blocks" class="flex items-center py-2 gap-10">
                 <div>
-                    {{ block.title }}:
+                    {{ block.title }}:    
                 </div>
                 <div>
                     <div class="w-16 h-16 flex border border-slate-100 rounded overflow-hidden">
@@ -119,14 +122,30 @@
                     fd.append('file', event.target.files[0])
                     fd.append('project_id', this.project_id)
                     this.current_block.is_loading = true
+                    let currentBlock = this.current_block; // Stockez une référence à this.current_block pour une utilisation dans la fonction de rappel
+
                     axios.post('/json/magic-upload-with-preview', fd, {
                         headers: {
                             'Content-Type': 'multipart/form-data'
                         }
                     }).then(response=>{
-                        this.current_block.preview = response.data.image
-                        this.current_block.is_used = true
-                        this.current_block.is_loading = false
+                        // Vérifier si la réponse contient une URL d'image valide
+                        if (response.data.image) {
+                        // Mettre à jour block.preview avec le lien de l'image
+                           currentBlock.preview = response.data.image;
+                           currentBlock.is_used = true;
+                           currentBlock.is_loading = false;
+                           console.log(currentBlock.preview);
+                        } else {
+                          console.error('No image URL found in response:', response);
+                        }
+
+                    }).catch(error => {
+                        console.error('Une erreur s\'est produite lors du téléchargement du fichier :', error);
+                        alert('Une erreur s\'est produite lors du téléchargement du fichier : ' + error.message);
+                        console.log(this.project_id);
+                        // Ajoutez ici votre gestion d'erreur, par exemple :
+                        // this.errorMessage = 'Une erreur s\'est produite lors du téléchargement du fichier.';
                     })
                 }
             },
