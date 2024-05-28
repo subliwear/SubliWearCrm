@@ -10,6 +10,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
           <div class="relative flex flex-col min-w-0 mb-6 break-words bg-white border-0 border-transparent border-solid shadow-soft-xl rounded-2xl bg-clip-border">
             <div class="p-6 flex pb-0 mb-0 bg-white border-b-0 border-b-solid rounded-t-2xl border-b-transparent">
+            
               <h6>Edit Product</h6>
             </div>
             <div class="flex-auto px-0 pt-0 pb-2">

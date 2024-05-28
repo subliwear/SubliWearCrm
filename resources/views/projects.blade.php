@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        {{ __('Projects') }}
+        {{ __('Projects') }} 
     </x-slot>
 
     <div class="py-12">

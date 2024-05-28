@@ -25,7 +25,7 @@ return [
     /**
      * Set access token, when set will bypass the oauth2 process
      */
-    'accessToken' => env('DROPBOX_ACCESS_TOKEN', ''),
+    'accessToken' => env('DROPBOX_TOKEN', ''),
 
     /**
      * Set access type, options are offline and online

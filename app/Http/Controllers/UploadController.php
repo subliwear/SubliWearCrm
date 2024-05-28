@@ -4,10 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Imagick;
-use Dcblogdev\Dropbox\Facades\Dropbox;
-use App\Models\ProjectUpload;
 use Spatie\Dropbox\Client;
+use App\Models\ProjectUpload;
 
 class UploadController extends Controller
 {
@@ -67,6 +65,8 @@ class UploadController extends Controller
             // Stocker le fichier dans le système de fichiers
             $filePath = $file->store('public/uploads');
             
+            
+            $this->uploadToDropbox($file, $project_id);
     
             // Créer une image GD à partir du fichier téléchargé
             $image = imagecreatefromstring(file_get_contents(storage_path('app/'.$filePath)));
@@ -87,9 +87,6 @@ class UploadController extends Controller
             // Supprimer le fichier temporaire
             Storage::delete($tmp);
 
-            
-
-    
             // Créer une nouvelle instance de ProjectUpload
             $p = new ProjectUpload;
     
@@ -188,12 +185,23 @@ class UploadController extends Controller
 
     public function uploadToDropbox($file, $project_id){
         $client = new Client(env('DROPBOX_TOKEN'));
-        $upload = json_decode($file->upload, true);
-        $content = Storage::get($file);
-        $filename = basename($file);
-        Dropbox::files()->upload('/A'.str_pad($project_id, 4, '0', STR_PAD_LEFT), storage_path('/app/'.$file));
-        $client->upload('/A'.$file->project_id.'/'.$filename, $content, $mode='add');
+        
+        // Récupérer le contenu du fichier
+        $content = file_get_contents($file->path());
+        
+        // Nom du fichier
+        $filename = $file->getClientOriginalName();
+        
+        // Chemin dans Dropbox
+        $dropboxPath = '/A'.str_pad($project_id, 4, '0', STR_PAD_LEFT).'/'.$filename;
+        
+        // Télécharger le fichier vers Dropbox
+        $client->upload($dropboxPath, $content, 'add');
+    
+        // Vous pouvez également utiliser l'API Dropbox PHP comme suit :
+        // \Dropbox::upload($dropboxPath, $content, 'add');
     }
+    
 
     public function getImage($projectId)
     {
