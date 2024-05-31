@@ -1,7 +1,8 @@
 <template>
     <label class="mb-2 ml-1 font-bold text-xs text-slate-700">Search existing patronages</label>
     <div class="mb-4">
-        <input type="text" v-model="keyword" required class="focus:shadow-soft-primary-outline text-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:outline-none focus:transition-shadow" placeholder="Type a keyword" aria-label="Name">
+        <!-- à Revoir -->
+        <input type="text" v-model="keyword"  class="focus:shadow-soft-primary-outline text-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:outline-none focus:transition-shadow" placeholder="Type a keyword" aria-label="Name">
     </div>
     <div class="flex gap-10">
         <patronage v-for="(patron, index) in patronages" :patronage="patron" @select="selected(patron, index)" :selected="selected_index==index"/>
@@ -35,22 +36,34 @@
                 for(let i = 0;i<Math.ceil(this.total/1); i++)
                     r.push(i)
                 return r
+            },
+            sortedPatronages() {
+                return this.patronages.sort((a, b) => a.title.localeCompare(b.title));
             }
-        },
+            
+            },
         methods: {
             setPage(page){
                 this.page = page
             },
             load(){
                 axios.get('/json/patronages?keyword='+this.keyword+'&page='+this.page).then(response=>{
-                    this.patronages = response.data.patronages
-                    this.total = response.data.total
+
+                   
+                    this.patronages = response.data.patronages;
+                    this.total = response.data.total;
+                    
                 })
+                .catch(error => {
+                   // Gérer l'erreur ici
+                   console.error('Une erreur s\'est produite lors du chargement des données :', error);
+                });
             },
             selected(patronage, index){
                 this.selected_index = index
                 this.$emit('selected', patronage)
             }
+            
         },
         watch: {
             keyword(){

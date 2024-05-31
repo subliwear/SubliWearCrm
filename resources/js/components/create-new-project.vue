@@ -20,7 +20,7 @@
             <div class="step-title">Choose type of patronage</div>
             <div class="choose-variant flex flex-row mb-2">
                 <label class="relative text-center p-6 mr-2" :class="patronage.patronage_type=='existing'?'shadow-soft-2xl border-2 rounded-2xl border-slate-700 bg-center stroke-0 text-slate-700':'cursor-pointer border-2 rounded-2xl border-slate-400 bg-center stroke-0 text-slate-400'">
-                    <input type="radio" value="existing" class="absolute opacity-0" v-model="patronage.patronage_type" name="patronage_type">
+                    <input type="radio" value="existing" class="absolute opacity-0" required v-model="patronage.patronage_type" name="patronage_type">
                     <div>
                         <svg xmlns="http://www.w3.org/2000/svg" height="1em" fill="currentcolor" viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"/></svg>
                         <div>Use existing patronage</div>
@@ -46,7 +46,7 @@
             </div>
             <div>
                 <div class="step-title">Input details</div>
-                <pieces @change="({details, columns}) => {patronage.details = details; patronage.custom_columns = columns}"/>
+                <pieces ref="pieces"  @change="({details, columns}) => {patronage.details = details; patronage.custom_columns = columns}"/>
             </div>
         </div>
     </div>
@@ -88,6 +88,11 @@
                     images: images
                 }
             },
+            handlePiecesChange({ details, columns }) {
+               this.patronage.details = details;
+               this.patronage.custom_columns = columns;
+               this.isPiecesFilled = details !== '' && columns !== '';
+            },
             patronageSelected(data, patronage){
                 patronage.patronage_id=data.id
                 patronage.is_selected = true;
@@ -95,14 +100,48 @@
                 patronage.category_images = {}
             },
             createProject(){
-                this.creating = true
-                axios.post('/json/project', {...this.project, project_id: this.project_id}).then(response=>{
-                    this.creating = false
-                    window.location = response.data.redirect
-                }).catch(()=>{
-                    this.creating = false
-                    alert('Error happened. Please try again')
-                })
+             this.creating = true
+             let allFieldsFilled = true;
+             
+
+            //     // Vérifiez si tous les champs dans le composant pieces sont remplis
+            //  for (let i = 0; i < this.$refs.pieces.length; i++) {
+            //       const piece = this.$refs.pieces[i];
+                 
+                 
+            //       console.log(allFieldsFilled);
+
+            //       console.log(piece.quantity);
+
+            //        // Vérifiez si la taille et la quantité sont vides pour chaque rangée
+            //       if (piece.size === '' || piece.quantity === '') {
+                    
+            //         allFieldsFilled = false;
+            //         break; // Sort de la boucle dès qu'un champ est vide
+            //       }
+            //       console.log(allFieldsFilled);
+            //  }
+
+                
+                if ( this.project.title !== '') {
+                    axios.post('/json/project', {...this.project, project_id: this.project_id})
+                    .then(response=>{
+                      this.creating = false
+                      window.location = response.data.redirect
+                    }).catch(()=>{
+                       this.creating = false
+                       alert('Projet est créer sans patronage');
+                       window.location = response.data.redirect
+                       return;
+                    });
+                  
+                    
+                } else {
+                    alert('Veuillez remplir tout les champs ');
+                    this.creating = false ;
+                    
+                }
+                
             },
             removePatronage(index){
                 this.project.patronages.splice(index, 1)

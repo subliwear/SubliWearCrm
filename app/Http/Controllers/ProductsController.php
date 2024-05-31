@@ -13,9 +13,9 @@ class ProductsController extends Controller
 {
     public function index(){
         return view('products')->with([
-            'categories'=>Category::all(),
+            'categories'=>Category::orderBy('title', 'asc')->get(),
             'products'=>Product::paginate(5, ['*'], 'product_page'),
-            'patronages'=>Patronage::paginate(10, ['*'], 'patronage_page')
+            'patronages' => Patronage::orderBy('title')->paginate(10, ['*'], 'patronage_page')
         ]);
     }
 
@@ -199,20 +199,25 @@ class ProductsController extends Controller
             $p = 0;
         }
 
-        
+        /////// à Revoir c'est la partie responsable au recherche de patronage
         if(!empty($request->keyword)){
-            $categories = Category::where('title', 'like', '%'.$request->keyword.'%')->pluck('id');
-            $str_cat = [];
-            foreach($categories as $cat){
-                $str_cat[] = (string)$cat;
-            }
+            // $categories = Category::where('title', 'like', '%'.$request->keyword.'%')->pluck('id');
+            // $str_cat = [];
+            // foreach($categories as $cat){
+            //     $str_cat[] = (string)$cat;
+            // }
             // d($str_cat);
-            $patronages = Patronage::wherejsoncontains('categories', $str_cat)->get();
+            // $patronages = Patronage::wherejsoncontains('categories', $str_cat)->get();
+            $patronages = Patronage::where('title', 'like', '%'.$request->keyword.'%')->get();
+
             $total = count($patronages);
             // $patronages = Patronage::where('categories', 'like', '%'.$request->keyword.'%')->skip($p*10)->take(10)->get();
         }else{
             $total = Patronage::all()->count();
-            $patronages = Patronage::skip($p*10)->take(10)->get();
+            $patronages = Patronage::orderBy('title', 'asc') // Tri par ordre alphabétique de la colonne 'title'
+              ->skip($p * 10)
+              ->take(10)
+              ->get();
         }
         $patronages = $patronages->map(function($item){
             unset($item->images);

@@ -9,7 +9,7 @@
       @endphp
       <div class="flex flex-wrap mt-6 -mx-3">
         <div class="w-full px-3 mb-6 lg:mb-0 lg:w-7/12 lg:flex-none">
-          <div class="relative flex flex-col min-w-0 break-words bg-white shadow-soft-xl rounded-2xl bg-clip-border">
+          <div class="relative flex flex-col min-w-0  break-words bg-white shadow-soft-xl rounded-2xl bg-clip-border">
             <div class="flex-auto p-4">
               <div class="flex flex-wrap -mx-3">
                 <div class="max-w-full px-3 lg:w-1/2 lg:flex-none">
@@ -55,7 +55,7 @@
         </div>
       </div>
       <div class="flex flex-wrap my-6 -mx-3">
-        <div class="w-full max-w-full px-3 mt-0 mb-6 md:mb-0 w-1/2 md:flex-none lg:flex-none">
+        <div class="w-full max-w-full px-3 mt-0 mb-6 md:mb-0 w-1/2 md:flex-none lg:flex-none" >
           <div class="border-black/12.5 shadow-soft-xl relative flex min-w-0 flex-col break-words rounded-2xl border-0 border-solid bg-white bg-clip-border">
             <div class="border-black/12.5 mb-0 rounded-t-2xl border-b-0 border-solid bg-white p-6 pb-0">
               <div class="flex flex-wrap mt-0 -mx-3">

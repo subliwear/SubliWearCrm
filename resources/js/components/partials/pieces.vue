@@ -20,7 +20,7 @@
                     <span v-else class="px-1">&nbsp;&nbsp;</span>
                 </th>
                 <td>
-                    <input type="text" v-model="row.size" placeholder="Size" class=" text-center focus:shadow-soft-primary-outline text-sm leading-5.6 ease-soft block w-full appearance-none border border-r-0 border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 transition-all focus:outline-none focus:transition-shadow" :class="[ri==0?'rounded-tl':'', ri==details.length-1?'rounded-bl':'', ri<details.length-1?'border-b-0':'']"/>
+                    <input type="text" v-model="row.size"  placeholder="Size" class=" text-center focus:shadow-soft-primary-outline text-sm leading-5.6 ease-soft block w-full appearance-none border border-r-0 border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 transition-all focus:outline-none focus:transition-shadow" :class="[ri==0?'rounded-tl':'', ri==details.length-1?'rounded-bl':'', ri<details.length-1?'border-b-0':'']"/>
                 </td>
                 <td>
                     <input type="number" v-model="row.quantity" placeholder="Quantity" class="text-center focus:shadow-soft-primary-outline text-sm leading-5.6 ease-soft block w-full appearance-none border border-r-0 border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 transition-all focus:outline-none focus:transition-shadow" :class="ri<details.length-1?'border-b-0':''"/>
