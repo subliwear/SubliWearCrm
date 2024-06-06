@@ -17,8 +17,12 @@
     },
     "dependencies": {
         "@vitejs/plugin-vue": "^4.2.3",
+        "datatables.net-bs5": "^2.0.8",
         "dropbox": "^10.34.0",
         "filepond": "^4.30.4",
+        "jquery": "^3.7.1",
+        "sweetalert2": "^11.11.1",
+        "toastr": "^2.1.4",
         "uuid": "^9.0.0",
         "vue": "^3.2.36",
         "vue-filepond": "^7.0.3",

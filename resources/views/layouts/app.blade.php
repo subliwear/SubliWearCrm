@@ -7,16 +7,26 @@
 
         <title>{{App\Models\Option::get()->title}}</title>
 
+        
+
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=open-sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i" rel="stylesheet" />
         <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+        <!-- Favicon -->
+        <link rel="icon" type="image/png" href="{{ asset('assets/img/logoSWCRM1.png') }}">
+
         <!-- Scripts -->
         @vite([/*'resources/css/app.css', */'resources/js/app.js'])
         <link rel="stylesheet" href="{{url('/assets/css/soft-ui-dashboard-tailwind.min.css')}}">
         <link rel="stylesheet" href="{{url('/assets/css/tooltips.css')}}">
         <link rel="stylesheet" href="{{url('/assets/css/perfect-scrollbar.css')}}">
         <link rel="stylesheet" href="{{url('/assets/css/nucleo-icons.css')}}">
+
+        
+        <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous"> -->
+        <link rel="stylesheet" href="//cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
+
     </head>
     <body class="m-0 font-sans antialiased font-normal text-base leading-default bg-gray-50 text-slate-500">
 
@@ -404,5 +414,12 @@
           }
 
         </style>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+        <script src="//cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
+        <script>
+          $(document).ready(function() {
+             $('#datatable').DataTable();
+          });
+        </script>
     </body>
 </html>

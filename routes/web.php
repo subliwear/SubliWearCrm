@@ -82,6 +82,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/{project}', [ProjectController::class, 'delete'])->name('projects-delete');
 
         Route::get('take/{project}', [ProjectController::class, 'takeProject'])->name('projects-take');
+        Route::post('/update-manager', [ProjectController::class,'updateManager']);
 
         
     });

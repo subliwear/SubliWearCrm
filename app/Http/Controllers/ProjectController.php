@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Manager;
 use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Models\ProjectUpload;
@@ -20,15 +21,19 @@ use App\Mail\NewMessageNotificationManager;
 use App\Mail\ManagerPickedOrder;
 use Dcblogdev\Dropbox\Facades\Dropbox;
 
+
 class ProjectController extends Controller
 {
     public function index(){
+        
         if(auth()->user()->is_customer())
             $projects = Project::where('customer_id', auth()->user()->customer->id)->where('is_confirmed', true)->orderBy('created_at', 'desc')->paginate(10);
+            $managers = Manager::with('user')->get();
         if(auth()->user()->is_manager())
             $projects = Project::where('is_confirmed', true)->where('is_ordered', false)->where(function($q){
                 $q->where('manager_id', auth()->user()->manager->id)->orWhereNull('manager_id');
             })->orderBy('created_at', 'asc')->paginate(10);
+            $managers = Manager::with('user')->get();
         if(auth()->user()->is_admin()){
             if(isset($_GET['search']) && !empty($_GET['search'])){
                 $projects = Project::where('is_confirmed', true)
@@ -45,15 +50,37 @@ class ProjectController extends Controller
                     ->orderBy('created_at', 'desc')
                     ->paginate(10);  
             }else{
-                $projects = Project::where('is_confirmed', true)->orderBy('created_at', 'desc')->paginate(10);  
+                $projects = Project::where('is_confirmed', true)->orderBy('created_at', 'desc')->paginate(10);
+                // $managers = Project::select('manager_id')->first();
+                $managers = Manager::with('user')->get();
+
+
             }
         }
             
-        return view('projects')->with(['projects'=>$projects]);
+        return view('projects')->with(['projects'=>$projects , 'managers' => $managers]);
     }
 
+
+    public function updateManager(Request $request)
+   
+    {
+       $projectId = $request->input('project_id');
+       $managerId = $request->input('manager_id');
+
+    // Mettez à jour le manager du projet
+       $project = Project::findOrFail($projectId);
+       $project->manager_id = $managerId;
+       $project->save();
+
+      return response()->json(['success' => true]);
+    }
+
+
+
     public function add(){
-        return view('projects-add');
+        $managers = Manager::with('user')->get();
+        return view('projects-add')->with(['managers' => $managers]);
     }
 
     public function view(Project $project){

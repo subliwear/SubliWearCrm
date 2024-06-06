@@ -7,6 +7,7 @@ import UploadCategoryEdit from './components/upload-category-edit.vue'
 import PatronageCategoriesSelector from './components/patronage-categories-selector.vue'
 import PatronageCustomerSelector from './components/patronage-customer-selector.vue'
 
+
 const app = createApp({});
 
 app.component('create-new-project', CreateNewProject);
@@ -23,3 +24,4 @@ app.mount("#app");
 // window.Alpine = Alpine;
 
 // Alpine.start();
+

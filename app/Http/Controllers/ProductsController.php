@@ -13,9 +13,9 @@ class ProductsController extends Controller
 {
     public function index(){
         return view('products')->with([
-            'categories'=>Category::orderBy('title', 'asc')->get(),
+            'categories'=>Category::orderBy('title', 'desc')->get(),
             'products'=>Product::paginate(5, ['*'], 'product_page'),
-            'patronages' => Patronage::orderBy('title')->paginate(10, ['*'], 'patronage_page')
+            'patronages' => Patronage::orderBy('title', 'desc')->get()
         ]);
     }
 
