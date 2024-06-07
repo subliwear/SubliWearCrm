@@ -16,6 +16,7 @@
         <!-- Favicon -->
         <link rel="icon" type="image/png" href="{{ asset('assets/img/logoSWCRM1.png') }}">
 
+
         <!-- Scripts -->
         @vite([/*'resources/css/app.css', */'resources/js/app.js'])
         <link rel="stylesheet" href="{{url('/assets/css/soft-ui-dashboard-tailwind.min.css')}}">
@@ -31,7 +32,7 @@
     <body class="m-0 font-sans antialiased font-normal text-base leading-default bg-gray-50 text-slate-500">
 
         {{-- @if(isset($aside)) --}}
-            <aside class="max-w-62.5 ease-nav-brand z-990 fixed inset-y-0 my-4 ml-4 block w-full -translate-x-full flex-wrap items-center justify-between overflow-y-auto rounded-2xl border-0 bg-white p-0 antialiased shadow-none transition-transform duration-200 xl:left-0 xl:translate-x-0 xl:bg-transparent">
+            <aside id="myAside" class="max-w-62.5 ease-nav-brand z-990 fixed inset-y-0 my-4 ml-4 block w-full -translate-x-full flex-wrap items-center justify-between overflow-y-auto rounded-2xl border-0 bg-white p-0 antialiased shadow-none transition-transform duration-200 xl:left-0 xl:translate-x-0 xl:bg-transparent">
             <div class="h-10"  style="margin-top: -30px;" >
               <i class="absolute top-0 right-0 hidden p-4 opacity-50 cursor-pointer fas fa-times text-slate-400 xl:hidden" sidenav-close></i>
                <a class="flex px-5 py-4 m-0 text-sm whitespace-nowrap text-slate-700" href="{{ route('dashboard') }}" >
@@ -416,6 +417,7 @@
         </style>
         <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
         <script src="//cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
+        
         <script>
           $(document).ready(function() {
              $('#datatable').DataTable();

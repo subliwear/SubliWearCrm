@@ -3,7 +3,7 @@
         <div class="chat-header flex justify-between mb-6">
             <div class="left w-1/2">
                 <div class="mb-1 font-semibold leading-normal text-lg text-slate-700">
-                    Title: {{ project_title }} 
+                    Intitulé de Projet : {{ project_title }} 
                     <input v-if="is_admin" v-model="code" type="text" placeholder="Set Tracking Code" class="ml-11 focus:shadow-soft-primary-outline text-sm leading-5.6 ease-soft inline w-32 appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:outline-none focus:transition-shadow rounded-br-none rounded-tr-none">
                     <button v-if="is_admin" class="appearance-none bg-clip-padding bg-white border border-gray-300 border-solid ease-soft focus:border-fuchsia-300 focus:outline-none focus:shadow-soft-primary-outline focus:transition-shadow font-normal inline leading-5.6 px-3 py-2 rounded-bl-none rounded-lg rounded-tl-none text-gray-700 text-sm transition-all border-l-0 bg-gray-200" @click="saveCode">Save</button>
                     <span class="text-lime-500 ml-2 text-3xs" v-if="is_code_saved">Saved</span>

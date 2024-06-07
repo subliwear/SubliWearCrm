@@ -197,7 +197,7 @@ p#projectId {
 
           @elseif(!auth()->user()->is_manager())
 
-            <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">{{ optional(optional($project->manager)->user)->name ?? 'null' }}</td>
+            <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent" style="font-size: 15px; font-weight: bold;">{{ optional(optional($project->manager)->user)->name ?? '...' }}</td>
           
 
           @endif 
@@ -207,7 +207,9 @@ p#projectId {
 
                   @if(auth()->user()->is_manager())
               <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
-        @if(empty($project->manager_id) && $free_project_count == 0 && auth()->user()->manager->canTake())
+        @if(empty($project->manager_id) )
+
+        <!-- à revoir si on a besoin  && $free_project_count == 0 && auth()->user()->manager->canTake() -->
             @php
           $free_project_count++;
            @endphp
@@ -330,7 +332,7 @@ function saveManager(buttonElement) {
                 console.log(response);
                 Swal.fire({
                 title: 'Success!',
-                text: 'The project manager has been updated successfully.',
+                text: 'le designer a été mis à jour avec succès .',
                 icon: 'success',
                 position: 'center',
                 showConfirmButton: false,
@@ -345,7 +347,7 @@ function saveManager(buttonElement) {
                 console.error(xhr.responseText);
                 Swal.fire({
                 title: 'Error!',
-                text: 'An error occurred while updating the project manager.',
+                text: 'Une erreur s est produite lors de la mise à jour du chef de projet.',
                 icon: 'error',
                 position: 'center', // Afficher au centre de la page
                 showConfirmButton: false,

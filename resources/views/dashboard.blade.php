@@ -9,8 +9,8 @@
       @endphp
       <div class="flex flex-wrap mt-6 -mx-3">
         <div class="w-full px-3 mb-6 lg:mb-0 lg:w-7/12 lg:flex-none">
-          <div class="relative flex flex-col min-w-0  break-words bg-white shadow-soft-xl rounded-2xl bg-clip-border">
-            <div class="flex-auto p-4">
+          <div class="relative flex flex-col min-w-0  break-words bg-white shadow-soft-xl rounded-2xl bg-clip-border" style="width: 85%;">
+            <div class="flex-auto p-4" >
               <div class="flex flex-wrap -mx-3">
                 <div class="max-w-full px-3 lg:w-1/2 lg:flex-none">
                   <div class="flex flex-col h-full">
@@ -38,8 +38,8 @@
             </div>
           </div>
         </div>
-        <div class="w-full max-w-full px-3 lg:w-5/12 lg:flex-none">
-          <div class="border-black/12.5 shadow-soft-xl relative flex h-full min-w-0 flex-col break-words rounded-2xl border-0 border-solid bg-white bg-clip-border p-4">
+        <div class="w-full max-w-full px-3 lg:w-5/12 lg:flex-none" >
+          <div class="border-black/12.5 shadow-soft-xl relative flex h-full min-w-0 flex-col break-words rounded-2xl border-0 border-solid bg-white bg-clip-border p-4" style="margin-left : -20%" >
             <div class="relative h-full overflow-hidden bg-cover rounded-xl" style="background-image: url('{{$option->right_column_image}}')">
               <span class="absolute top-0 left-0 w-full h-full bg-center bg-cover bg-gradient-to-tl from-gray-900 to-slate-800 opacity-80"></span>
               <div class="relative z-10 flex flex-col flex-auto h-full p-4">
@@ -118,7 +118,8 @@
                       @endif
                       @if(auth()->user()->is_manager())
                         <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
-                            @if(empty($project->manager_id) && $free_project_count==0 && auth()->user()->manager->canTake())
+                            @if(empty($project->manager_id) )
+                             <!-- à  enregister si ona a besoin && $free_project_count==0 && auth()->user()->manager->canTake() -->
                               @php
                                 $free_project_count++;
                               @endphp
@@ -228,5 +229,26 @@
         border-radius: 10px;
         background-color:#ff0080;
       }
+      /* Flexbox pour la mise en page de base */
+     .container {     
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+     }
+
+     .section {
+         flex: 1;
+         min-width: 300px; /* Largeur minimale pour les sections */
+         padding: 10px;
+         border: 1px solid #ccc;
+     }
+
+     /* Media queries pour les petits écrans */
+     @media (max-width: 768px) {
+       .section {
+        flex: 1 1 100%; /* Prendre toute la largeur de l'écran sur les petits appareils */
+      }
+     }
+
     </style>
 </x-app-layout>

@@ -63,18 +63,29 @@ class ProjectController extends Controller
 
 
     public function updateManager(Request $request)
-   
     {
-       $projectId = $request->input('project_id');
-       $managerId = $request->input('manager_id');
+    $projectId = $request->input('project_id');
+    $managerId = $request->input('manager_id');
 
-    // Mettez à jour le manager du projet
-       $project = Project::findOrFail($projectId);
-       $project->manager_id = $managerId;
-       $project->save();
+    // Rechercher le projet correspondant au project_id
+    $project = Project::findOrFail($projectId);
 
-      return response()->json(['success' => true]);
+    // Mettre à jour le manager_id du projet
+    $project->manager_id = $managerId;
+    $project->save();
+
+    // Vérifier s'il existe des commandes correspondant au project_id
+    if (Order::where('project_id', $projectId)->exists()) {
+        // Mettre à jour le manager_id dans la table "orders"
+        Order::where('project_id', $projectId)->update(['manager_id' => $managerId]);
+
+        return response()->json(['success' => true]);
+    } else {
+        // Si aucune commande correspondant au project_id n'a été trouvée dans la table "orders"
+        return response()->json(['success' => false, 'message' => 'La mise à jour du designer a été réalisée, bien que le projet correspondant n ait pas encore franchi l étape de commande.']);
     }
+    }
+
 
 
 
