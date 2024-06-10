@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\langController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -169,5 +170,8 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/get-image/{projectId}', [UploadController::class, 'getImage']);
+
+
+Route::get('locale/{projectId}', [langController::class,'setLocale']);
 
 require __DIR__.'/auth.php';

@@ -19,6 +19,9 @@
                 backgroundSize: 'cover',
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',
+                textShadow: '2px 2px 4px #000000',
+                border: '1px solid black',
+                fontSize: '11px'
             }" 
                 @dragenter.prevent="setActive" 
                 @dragover.prevent="setActive" 

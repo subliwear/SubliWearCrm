@@ -11,6 +11,7 @@ use App\Models\Patronage;
 use App\Models\ProjectMessage;
 use App\Models\ProjectNote;
 use App\Models\Order;
+use App\Models\Option;
 use App\Models\Discount;
 use App\Models\OrderStatus;
 use Mail;
@@ -29,11 +30,13 @@ class ProjectController extends Controller
         if(auth()->user()->is_customer())
             $projects = Project::where('customer_id', auth()->user()->customer->id)->where('is_confirmed', true)->orderBy('created_at', 'desc')->paginate(10);
             $managers = Manager::with('user')->get();
+            $options = Option::first();
         if(auth()->user()->is_manager())
             $projects = Project::where('is_confirmed', true)->where('is_ordered', false)->where(function($q){
                 $q->where('manager_id', auth()->user()->manager->id)->orWhereNull('manager_id');
             })->orderBy('created_at', 'asc')->paginate(10);
             $managers = Manager::with('user')->get();
+            $options = Option::first();
         if(auth()->user()->is_admin()){
             if(isset($_GET['search']) && !empty($_GET['search'])){
                 $projects = Project::where('is_confirmed', true)
@@ -54,11 +57,14 @@ class ProjectController extends Controller
                 // $managers = Project::select('manager_id')->first();
                 $managers = Manager::with('user')->get();
 
+                $options = Option::first();
+ 
+
 
             }
         }
             
-        return view('projects')->with(['projects'=>$projects , 'managers' => $managers]);
+        return view('projects')->with(['projects'=>$projects , 'managers' => $managers , 'options'=> $options]);
     }
 
 

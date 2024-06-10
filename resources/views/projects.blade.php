@@ -8,7 +8,7 @@
   <style>
 /* Style pour le select */
 select[name="manager_id"] {
-    width: 45%;
+    width: 70%;
     padding: 5px 11px;
     margin: 4px 0;
     display: inline-block;
@@ -61,22 +61,26 @@ p#projectId {
               <i class="fas fa-sync-alt"></i>
             </a>
             <h6 class="mb-0">Projects</h6>
+             
+              
+             
           </div>
+          
 
 
           @if(auth()->user()->is_admin())
-        <div class="w-90 ml-auto">
+        <!-- <div class="w-90 ml-auto">
         <form action="{{route('projects')}}" method="GET" class="flex">
           <input
           class="focus:shadow-soft-primary-outline text-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:outline-none focus:transition-shadow mr-2"
-          type="text" placeholder="Search projects" value="@if(isset($_GET['search'])){{$_GET['search']}}@endif"
+          type="text" placeholder="Search projects with code " value="@if(isset($_GET['search'])){{$_GET['search']}}@endif"
           name="search">
           <button><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
             <path
             d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" />
           </svg></button>
         </form>
-        </div>
+        </div> -->
       @endif
           @if(auth()->user()->is_customer())
         <a class="ml-auto inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all bg-transparent rounded-lg cursor-pointer leading-pro text-xs ease-soft-in shadow-soft-md bg-150 bg-gradient-to-tl from-gray-900 to-slate-800 hover:shadow-soft-xs active:opacity-85 hover:scale-102 tracking-tight-soft bg-x-25"
@@ -86,11 +90,11 @@ p#projectId {
         </div>
         <div class="flex-auto px-2 pt-0 pb-2">
           <div class="p-0 overflow-x-auto">
-            <table class="items-center w-full mb-0 align-top border-gray-200 text-slate-500">
+            <table id="datatable" class="items-center w-full mb-0 align-top border-gray-200 text-slate-500">
               <thead class="align-bottom">
                 <tr>
-                  <th
-                    class="px-6 py-3 font-bold text-left uppercase align-middle bg-transparent border-b border-gray-200 shadow-none text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">
+                  <th 
+                    class="px-6 py-3 font-bold text-left uppercase align-middle bg-transparent border-b border-gray-200 shadow-none text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70" style="width: 5%;" >
                     Id</th>
                   <th
                     class="px-6 py-3 font-bold text-left uppercase align-middle bg-transparent border-b border-gray-200 shadow-none text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">
@@ -110,12 +114,24 @@ p#projectId {
                   @endif  
                   <th
                     class="px-6 py-3 pl-2 font-bold text-left uppercase align-middle bg-transparent border-b border-gray-200 shadow-none text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">
-                    Is ordered</th>
+                    <select id="orderFilter" class="form-select">
+                      <option value="">Tout Statuts</option>
+                      <option value="Ordered">Ordered</option>
+                      <option value="In Progress">In Progress</option>
+                    </select>
+                  </th>
                     @if(auth()->user()->is_manager())
                     <th
                     class="px-6 py-3 pl-2 font-bold text-left uppercase align-middle bg-transparent border-b border-gray-200 shadow-none text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">
                     Statut </th>
                     @endif
+                   
+                    <th
+                    class="px-6 py-3 pl-2 font-bold text-left uppercase align-middle bg-transparent border-b border-gray-200 shadow-none text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">
+                    Date création projet</th>
+                    
+                
+
                   <th
                     class="px-6 py-3 pl-2 font-bold text-left uppercase align-middle bg-transparent border-b border-gray-200 shadow-none text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">
                     Total</th>
@@ -127,11 +143,12 @@ p#projectId {
               <tbody>
                 @php
           $free_project_count = 0;
+          
         @endphp
                 @foreach($projects as $project)
                 <tr>
                   <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
-                  <div class="flex items-center">
+                  <div >
                     @if(auth()->user()->is_manager() && $project->is_read_manager == false)
             <div class="unread mr-2"></div>
           @endif
@@ -179,7 +196,10 @@ p#projectId {
 
                 @elseif(empty($project->manager_id))
                     <select name="manager_id" id="manager_id" onchange="showSaveButton(this)">
+                      <option value="" disabled selected>Choisir un designer</option>
                         @foreach($managers as $proj)
+                           
+                            
 
                             <option value="{{$proj->id}}" >
                                 {{$proj->user->name}}
@@ -205,6 +225,8 @@ p#projectId {
 
 
 
+
+
                   @if(auth()->user()->is_manager())
               <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
         @if(empty($project->manager_id) )
@@ -222,20 +244,29 @@ p#projectId {
               </td>
           @endif
                   <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
-                  @if($project->is_ordered)
+      @if($project->is_ordered)
             <p class="mb-0 text-xs font-semibold leading-tight">
             <span
             class="px-2 text-xs rounded text-white bg-gradient-to-tl from-green-600 to-lime-400">Ordered</span>
             </p>
-          @else
-        <p class="mb-0 text-xs font-semibold leading-tight">
-        <span class="px-2 text-xs rounded text-white bg-gradient-to-tl from-blue-600 to-slate-300">In
-        progress</span>
-        </p>
+        @else
+            <p class="mb-0 text-xs font-semibold leading-tight">
+             <span class="px-2 text-xs rounded text-white bg-gradient-to-tl from-blue-600 to-slate-300">In
+               progress</span>
+            </p>
       @endif
                   </td>
+                  <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent" 
+                   @if ($project->created_at->diffInDays(now()) > $options->deadline && !auth()->user()->is_customer()) 
+                      style="background-color: #8B0000; color: white"
+                    @endif>
+                    <p class="mb-0 text-xs font-semibold leading-tight" >{{$project->created_at->format('d/m/Y')}}</p>
+                  </td>
+
+
+
                   <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
-                  <p class="mb-0 text-xs font-semibold leading-tight">{{number_format($project->total(), 2)}}€</p>
+                   <p class="mb-0 text-xs font-semibold leading-tight total-value" id="TotalValue" >{{number_format($project->total(), 2)}}€</p>
                   </td>
                   <td class="p-2 align-middle text-right bg-transparent border-b whitespace-nowrap shadow-transparent">
                   <a href="{{route('projects-view', $project)}}"
@@ -253,6 +284,24 @@ p#projectId {
                 </tr>
         @endforeach
               </tbody>
+
+
+            @if(!auth()->user()->is_customer())
+              <tfoot>
+                  <tr>
+                      <td>.</td>
+                      <td ></td>
+                      <td ></td>
+                      <td ></td>
+                      <td ></td>
+                      <td ></td>
+                      <td ></td>
+                      <td  id="totalCell" ></td>
+                      <td ></td>
+                  </tr>
+              </tfoot>
+            @endif 
+              
             </table>
             <div class="p-6">
               {{$projects->appends(request()->input())->links('vendor.pagination.tailwind')}}
@@ -262,6 +311,8 @@ p#projectId {
       </div>
     </div>
   </div>
+
+  <!-- <button onclick="getValue()">test</button> -->
   <style>
 
     .inline-container {
@@ -357,6 +408,38 @@ function saveManager(buttonElement) {
         });
     }
 
+    function getValue() {
+            // Sélectionne tous les éléments avec la classe 'total-value'
+            var elements = document.querySelectorAll(".total-value");
+            var totals = [];
+            
+            // Parcourt chaque élément et extrait le texte
+            elements.forEach(function(element) {
+                var textValue = element.textContent || element.innerText;
+                // Enlève le symbole de l'euro et convertit en nombre flottant
+                var numericValue = parseFloat(textValue.replace('€', '').replace(',', ''));
+                totals.push(numericValue);
+            });
+
+            // Calcule la somme de tous les totaux
+            var totalSum = totals.reduce(function(acc, curr) {
+                return acc + curr;
+            }, 0);
+
+            // Affiche la somme totale dans la console
+            console.log("Total des totaux: " + totalSum.toFixed(2) + "€");
+
+            // Affiche la somme totale dans un élément HTML
+            
+            var totalCell = document.getElementById("totalCell");
+            if (totalCell) {
+                totalCell.textContent = totalSum.toFixed(2) + "€";
+            }
+            console.log(totalSum);
+
+          }
+    
+getValue()
 </script>
 
 

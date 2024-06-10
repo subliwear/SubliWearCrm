@@ -34,6 +34,7 @@ class OptionController extends Controller
 
         $o->left_column_text = $request->left_column_text;
         $o->right_column_text = $request->right_column_text;
+        $o->deadline = $request->deadline;
 
 
         $o->title = $request->title;

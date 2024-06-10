@@ -56,7 +56,16 @@ class CustomerController extends Controller
 
     public function json(){
         if(isset($_GET['ss']) && !empty($_GET['ss'])){
-            $customers = Customer::with('user')->whereIn('user_id', User::where('name', 'like', '%'.$_GET['ss'].'%')->pluck('id'))->get();
+            // $customers = Customer::with('user')->whereIn('user_id', User::where('name', 'like', '%'.$_GET['ss'].'%')->pluck('id'))->get();
+            $customers = Customer::with('user')
+              ->whereIn('user_id', function($query) {
+                  $query->select('id')
+              ->from('users')
+              ->where('name', 'like', '%'.$_GET['ss'].'%')
+              ->orWhere('email', 'like', '%'.$_GET['ss'].'%');
+              })
+              ->get();
+
         }else{
             $customers = Customer::with('user')->get();
         }

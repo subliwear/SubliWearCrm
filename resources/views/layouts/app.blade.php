@@ -17,6 +17,7 @@
         <link rel="icon" type="image/png" href="{{ asset('assets/img/logoSWCRM1.png') }}">
 
 
+
         <!-- Scripts -->
         @vite([/*'resources/css/app.css', */'resources/js/app.js'])
         <link rel="stylesheet" href="{{url('/assets/css/soft-ui-dashboard-tailwind.min.css')}}">
@@ -32,7 +33,7 @@
     <body class="m-0 font-sans antialiased font-normal text-base leading-default bg-gray-50 text-slate-500">
 
         {{-- @if(isset($aside)) --}}
-            <aside id="myAside" class="max-w-62.5 ease-nav-brand z-990 fixed inset-y-0 my-4 ml-4 block w-full -translate-x-full flex-wrap items-center justify-between overflow-y-auto rounded-2xl border-0 bg-white p-0 antialiased shadow-none transition-transform duration-200 xl:left-0 xl:translate-x-0 xl:bg-transparent">
+            <aside class="max-w-62.5 ease-nav-brand z-990 fixed inset-y-0 my-4 ml-4 block w-full -translate-x-full flex-wrap items-center justify-between overflow-y-auto rounded-2xl border-0 bg-white p-0 antialiased shadow-none transition-transform duration-200 xl:left-0 xl:translate-x-0 xl:bg-transparent">
             <div class="h-10"  style="margin-top: -30px;" >
               <i class="absolute top-0 right-0 hidden p-4 opacity-50 cursor-pointer fas fa-times text-slate-400 xl:hidden" sidenav-close></i>
                <a class="flex px-5 py-4 m-0 text-sm whitespace-nowrap text-slate-700" href="{{ route('dashboard') }}" >
@@ -343,7 +344,7 @@
                     </div>
                     </div> -->
                     
-                    <a  class="inline-block w-full px-6 py-3 my-4 font-bold text-center text-white uppercase align-middle transition-all ease-in border-0 rounded-lg select-none shadow-soft-md bg-150 bg-x-25 leading-pro text-xs bg-gradient-to-tl from-purple-700 to-pink-500 hover:shadow-soft-2xl hover:scale-102" href="{{route('support')}}">Support Contact</a>
+                    <a  class="inline-block w-full px-6 py-3 my-4 font-bold text-center text-white uppercase align-middle transition-all ease-in border-0 rounded-lg select-none shadow-soft-md bg-150 bg-x-25 leading-pro text-xs bg-gradient-to-tl  hover:shadow-soft-2xl hover:scale-102" style="background-color: #9FBD13" href="{{route('support')}}">Support Contact</a>
                     </div>
             </aside>
         {{-- @endif --}}
@@ -419,8 +420,18 @@
         <script src="//cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
         
         <script>
+          
           $(document).ready(function() {
-             $('#datatable').DataTable();
+           // Initialisation de DataTables
+           var table = $('#datatable').DataTable({
+               
+           });
+   
+           // Filtre pour la colonne "Is ordered"
+           $('#orderFilter').on('change', function() {
+               var filterValue = $(this).val();
+               table.search(filterValue).draw();
+           });
           });
         </script>
     </body>

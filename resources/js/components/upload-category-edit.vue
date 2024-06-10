@@ -13,7 +13,9 @@
                         left: Math.min(block.startx, block.endx)+'px', 
                         top: Math.min(block.starty, block.endy)+'px', 
                         width: Math.abs(block.endx-block.startx)+'px', 
-                        height: Math.abs(block.endy-block.starty)+'px'
+                        height: Math.abs(block.endy-block.starty)+'px',
+                        textShadow: '2px 2px 4px #000000',
+                        border: '1px solid black',
                     }">
                         {{ block.title }}
                     </div>
