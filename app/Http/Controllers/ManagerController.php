@@ -34,10 +34,12 @@ class ManagerController extends Controller
         $u = new User;
         $u->name = $request->name;
         $u->email = $request->email;
-        $pwd = Str::random(6);
-        $u->password = Hash::make($pwd);
+        $pwd = $request->password;
+
+        $u->password = Hash::make($request->password);
         $u->is_man = true;
         $u->save();
+        
         Mail::to($u->email)->send(new SendPasswordToManager($u, $pwd));
         //TODO: send email to manager with his new password
 

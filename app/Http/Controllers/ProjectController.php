@@ -23,6 +23,7 @@ use App\Mail\ManagerPickedOrder;
 use Dcblogdev\Dropbox\Facades\Dropbox;
 
 
+
 class ProjectController extends Controller
 {
     public function index(){
@@ -399,7 +400,8 @@ class ProjectController extends Controller
         if(auth()->user()->is_manager())
             $orders = Order::where('manager_id', auth()->user()->manager->id)->orderBy('order_status_id', 'asc')->orderBy('created_at', 'desc')->take(10)->get();
         if(auth()->user()->is_admin())
-            $orders = Order::orderBy('order_status_id', 'asc')->orderBy('created_at', 'desc')->take(10)->get();     
+            $orders = Order::orderBy('order_status_id', 'asc')->orderBy('created_at', 'desc')->take(10)->get();
+                 
         return view('dashboard')->with(['projects'=>$projects, 'orders'=>$orders]);
     }
 

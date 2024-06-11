@@ -7,6 +7,8 @@ use App\Models\Customer;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use App\Mail\SendPasswordToClient;
+use Mail;
 
 class CustomerController extends Controller
 {
@@ -27,20 +29,27 @@ class CustomerController extends Controller
             'email'=>'email|required|unique:users',
             'name'=>'required'
         ]);
-
-        $u = new User;
-        $u->name = $request->name;
-        $u->email = $request->email;
+    
+        // Création d'un nouvel utilisateur
+        $user = new User;
+        $user->name = $request->name;
+        $user->email = $request->email;
         $pwd = Str::random(6);
-        $u->password = Hash::make($pwd);
-        $u->save();
-        //TODO: send email to manager with his new password
-        $m = new Customer;
-        $m->user_id = $u->id;
-        $m->save();
-        //TODO: redirect to success
-        return redirect()->route('managers');
+        $user->password = Hash::make($pwd);
+        $user->save();
+    
+        // Création d'un client lié à cet utilisateur
+        $customer = new Customer;
+        $customer->user_id = $user->id;
+        $customer->save();
+    
+        // Envoi d'un email au nouvel utilisateur avec son mot de passe
+        Mail::to($user->email)->send(new SendPasswordToClient($user, $pwd));
+        
+        // Redirection vers la page des clients après la création réussie
+        return redirect()->route('customers');
     }
+    
 
     public function save(Customer $customer, Request $request){
         $customer->user->name = $request->name;

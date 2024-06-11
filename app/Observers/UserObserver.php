@@ -10,14 +10,14 @@ class UserObserver
     /**
      * Handle the User "created" event.
      */
-    public function created(User $user): void
-    {
-        if(!$user->is_man){
-            $c = new Customer;
-            $c->user_id = $user->id;
-            $c->save();
-        }
-    }
+    // public function created(User $user): void
+    // {
+    //     if(!$user->is_man){
+    //         $c = new Customer;
+    //         $c->user_id = $user->id;
+    //         $c->save();
+    //     }
+    // }
 
     /**
      * Handle the User "updated" event.

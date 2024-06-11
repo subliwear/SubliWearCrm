@@ -17,10 +17,10 @@
 <body>
     <div class="container">
         <!-- Utilisez asset() pour générer le chemin de l'image -->
-        <img src="https://www.subliwear.fr/wp-content/uploads/2020/09/Logo.png" alt="Logo" class="logo" height="auto">
+        <img src="https://www.subliwear.fr/wp-content/uploads/2020/09/Logo.png" alt="Logo" class="logo"  height="auto">
 
         <h2>Informations de connexion</h2>
-        <p>Bonjour {{$user->name}},</p>
+        <p>Bonjour cher {{$user->name}},</p>
         
         <div class="message">
             <p>Voici les informations de connexion sur Subliwear CRM :</p>
@@ -30,7 +30,7 @@
             </ul>
         </div>
         
-        <p>Vous pouvez utiliser ces informations pour accéder à votre compte en tant que manager.</p>
+        <p>Vous pouvez utiliser ces informations pour accéder à votre compte en tant que client.</p>
         
         <p>Merci,<br>
         Subliwear CRM </p>
