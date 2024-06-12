@@ -120,6 +120,8 @@
     import patronage from './partials/message-types/patronage.vue'
     import noteSection from './partials/message-types/note-section.vue'
     import fileuploader from './partials/fileuploader.vue';
+    import Swal from 'sweetalert2';
+
 
     export default{
         components: {
@@ -305,11 +307,28 @@
                 }, 1000)
             },
             
-            new_status(){
-                axios.post('/json/status/'+this.project_id, {status: this.new_status}).then(()=>{
-                    this.load()
-                })
+            new_status() {
+                axios.post('/json/status/' + this.project_id, { status: this.new_status })
+                    .then(() => {
+                        this.load();
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Succès !',
+                            text: 'Votre statut a été mis à jour avec succès.',
+                            timer: 3000, // Spécifiez la durée en millisecondes
+                            timerProgressBar: true, // Affiche une barre de progression du minuteur
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error updating status:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Une erreur s\'est produite lors de la mise à jour du statut.'
+                        });
+                    });
             }
+
         }
     }
 </script>

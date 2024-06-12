@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Dropbox\Client;
 use App\Models\ProjectUpload;
+use Illuminate\Filesystem\Filesystem;
+
+
 
 class UploadController extends Controller
 {
@@ -42,66 +45,64 @@ class UploadController extends Controller
     //     return response()->json(['image'=>'data:image/jpeg;base64,'.base64_encode($buf)]);
     // }
 
-    public function magic_upload(Request $request) {
+    public function magic_upload(Request $request)
+    {
         try {
             // Récupérer l'ID du projet depuis la requête
             $project_id = $request->project_id;
-    
+
             // Vérifier si un fichier a été attaché à la requête
             if (!$request->hasFile('file')) {
                 throw new \Exception('No file uploaded');
             }
-    
+
             // Récupérer le fichier de la requête
             $file = $request->file('file');
 
-            
-    
             // Vérifier si le fichier est valide
             if (!$file->isValid()) {
                 throw new \Exception('Invalid file uploaded');
             }
-    
-            // Stocker le fichier dans le système de fichiers
+
+            // Stocker le fichier dans le système de fichiers local
             $filePath = $file->store('public/uploads');
-            
-            
-            $this->uploadToDropbox($file, $project_id);
-    
+
+            // Télécharger le fichier vers Dropbox
+            $this->uploadToDropbox2($file, $project_id);
+
             // Créer une image GD à partir du fichier téléchargé
-            $image = imagecreatefromstring(file_get_contents(storage_path('app/'.$filePath)));
-    
+            $image = imagecreatefromstring(file_get_contents(storage_path('app/' . $filePath)));
+
             // Créer un nom de fichier temporaire unique
-            $tmp = 'public/uploads/'.time().'.jpg';
-    
+            $tmp = 'public/uploads/' . time() . '.jpg';
+
             // Redimensionner l'image à une largeur de 300 pixels
             $resizedImage = imagescale($image, 300);
-    
+
             // Sauvegarder l'image redimensionnée
-            imagejpeg($resizedImage, storage_path('app/'.$tmp));
-    
+            imagejpeg($resizedImage, storage_path('app/' . $tmp));
+
             // Libérer la mémoire
             imagedestroy($image);
             imagedestroy($resizedImage);
-    
+
             // Supprimer le fichier temporaire
             Storage::delete($tmp);
 
             // Créer une nouvelle instance de ProjectUpload
             $p = new ProjectUpload;
-    
+
             // Définir les propriétés de ProjectUpload
             $p->project_id = $project_id;
             $p->is_uploaded_by_customer = true;
             $p->preview = url(str_replace('public', 'storage', $filePath));
             $p->download = url(str_replace('public', 'storage', $filePath));
-    
+
             // Enregistrer l'objet ProjectUpload
             $p->save();
-    
+
             // Renvoyer une réponse JSON avec succès
-            return response()->json(['success' => true , 'image' => $p->preview ], 200);
-    
+            return response()->json(['success' => true, 'image' => $p->preview], 200);
         } catch (\Exception $e) {
             // Gérer l'erreur et renvoyer une réponse JSON avec le message d'erreur
             return response()->json(['error' => $e->getMessage()], 400);
@@ -184,7 +185,7 @@ class UploadController extends Controller
 
 
     public function uploadToDropbox($file, $project_id){
-        $client = new Client(env('DROPBOX_TOKEN'));
+        $client = new Client(env('DROPBOX_REFRESH_TOKEN'));
         
         // Récupérer le contenu du fichier
         $content = file_get_contents($file->path());
@@ -201,6 +202,19 @@ class UploadController extends Controller
         // Vous pouvez également utiliser l'API Dropbox PHP comme suit :
         // \Dropbox::upload($dropboxPath, $content, 'add');
     }
+
+    public function uploadToDropbox2($file, $project_id)
+    {
+        // Nom du fichier
+        $filename = $file->getClientOriginalName();
+
+        // Chemin dans Dropbox
+        $dropboxPath = '/A' . str_pad($project_id, 4, '0', STR_PAD_LEFT) . '/' . $filename;
+
+        // Télécharger le fichier vers Dropbox
+        Storage::disk('dropbox')->put($dropboxPath, file_get_contents($file->path()));
+    }
+    
     
 
     public function getImage($projectId)

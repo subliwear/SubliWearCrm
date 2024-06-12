@@ -55,6 +55,12 @@ return [
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
         ],
+        'dropbox' => [
+            'driver' => 'dropbox',
+            'refreshToken' => env('DROPBOX_REFRESH_TOKEN'),
+            'appKey' => env('DROPBOX_APP_KEY'),
+            'appSecret' => env('DROPBOX_APP_SECRET'),
+        ],
 
     ],
 

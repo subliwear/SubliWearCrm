@@ -13,7 +13,7 @@ class CreateDropboxTokensTable extends Migration
      */
     public function up()
     {
-        Schema::create('dropbox_tokens', function (Blueprint $table) {
+        Schema::create('DROPBOX_REFRESH_TOKEN', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->nullable();
             $table->string('email')->nullable();

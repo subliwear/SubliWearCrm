@@ -393,7 +393,7 @@ class ProjectController extends Controller
                 $q->where('manager_id', auth()->user()->manager->id)->orWhereNull('manager_id');
             })->orderBy('created_at', 'asc')->take(10)->get();
         if(auth()->user()->is_admin())
-            $projects = Project::orderBy('created_at', 'desc')->take(10)->get();  
+            $projects = Project::orderBy('created_at', 'desc')->where('is_confirmed', true)->take(10)->get();  
     
         if(auth()->user()->is_customer())
             $orders = Order::where('customer_id', auth()->user()->customer->id)->orderBy('order_status_id', 'asc')->orderBy('created_at', 'desc')->take(10)->get();
@@ -406,7 +406,7 @@ class ProjectController extends Controller
     }
 
     public function uploadToDropbox(ProjectUpload $file){
-        // $client = new Spatie\Dropbox\Client(env('DROPBOX_TOKEN'));
+        // $client = new Spatie\Dropbox\Client(env('DROPBOX_REFRESH_TOKEN'));
         // $upload = json_decode($file->upload, true);
         $content = Storage::get($file->file);
         $filename = basename($file->file);

@@ -114,6 +114,9 @@
                             @if(!empty($project->manager_id))
                                 <p class="mb-0 text-xs font-semibold leading-tight">{{$project->manager->user->name}}</p>
                             @endif
+                            @if(empty($project->manager_id))
+                                <p class="mb-0 text-xs font-semibold leading-tight">...</p>
+                            @endif
                         </td>
                       @endif
                       @if(auth()->user()->is_manager())
