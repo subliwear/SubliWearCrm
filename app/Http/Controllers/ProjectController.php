@@ -27,17 +27,34 @@ use Dcblogdev\Dropbox\Facades\Dropbox;
 class ProjectController extends Controller
 {
     public function index(){
+        $projects = collect(); // Initialiser comme une collection vide
+        $managers = Manager::with('user')->get();
+        $options = Option::first();
+        $projectmessages = [];
         
         if(auth()->user()->is_customer())
             $projects = Project::where('customer_id', auth()->user()->customer->id)->where('is_confirmed', true)->orderBy('created_at', 'desc')->paginate(10);
             $managers = Manager::with('user')->get();
             $options = Option::first();
+            $projectmessages = 'test';
+            
+            
+
         if(auth()->user()->is_manager())
             $projects = Project::where('is_confirmed', true)->where('is_ordered', false)->where(function($q){
                 $q->where('manager_id', auth()->user()->manager->id)->orWhereNull('manager_id');
             })->orderBy('created_at', 'asc')->paginate(10);
             $managers = Manager::with('user')->get();
             $options = Option::first();
+            $projectmessages = [];
+            foreach($projects as $project) {
+                    $projectmessages[$project->customer_id] = ProjectMessage::where('is_sent_by_customer', true)
+                        ->where('customer_id', $project->customer_id)
+                        ->orderByDesc('created_at')
+                       ->limit(1)
+                        ->get();
+            }
+            
         if(auth()->user()->is_admin()){
             if(isset($_GET['search']) && !empty($_GET['search'])){
                 $projects = Project::where('is_confirmed', true)
@@ -59,13 +76,23 @@ class ProjectController extends Controller
                 $managers = Manager::with('user')->get();
 
                 $options = Option::first();
+
+                
+                $projectmessages = [];
+                foreach($projects as $project) {
+                    $projectmessages[$project->customer_id] = ProjectMessage::where('is_sent_by_customer', true)
+                        ->where('customer_id', $project->customer_id)
+                        ->orderByDesc('created_at')
+                       ->limit(1)
+                        ->get();
+                }
+
+
  
-
-
-            }
+                }
         }
             
-        return view('projects')->with(['projects'=>$projects , 'managers' => $managers , 'options'=> $options]);
+        return view('projects')->with(['projects'=>$projects , 'managers' => $managers , 'options'=> $options ,'projectmessages' => $projectmessages]);
     }
 
 
@@ -386,6 +413,8 @@ class ProjectController extends Controller
     }
 
     public function dashboard(){
+        $projects = collect(); // Collection vide pour les projets
+        $orders = collect();   // Collection vide pour les commandes
         if(auth()->user()->is_customer())
             $projects = Project::where('customer_id', auth()->user()->customer->id)->where('is_confirmed', true)->where('is_ordered', false)->orderBy('created_at', 'desc')->take(10)->get();
         if(auth()->user()->is_manager())

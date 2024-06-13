@@ -10,6 +10,7 @@ use Illuminate\Filesystem\Filesystem;
 
 
 
+
 class UploadController extends Controller
 {
     public function upload(Request $request){
@@ -68,7 +69,7 @@ class UploadController extends Controller
             $filePath = $file->store('public/uploads');
 
             // Télécharger le fichier vers Dropbox
-            $this->uploadToDropbox2($file, $project_id);
+            $this->uploadToDropbox3($file, $project_id);
 
             // Créer une image GD à partir du fichier téléchargé
             $image = imagecreatefromstring(file_get_contents(storage_path('app/' . $filePath)));
@@ -213,6 +214,21 @@ class UploadController extends Controller
 
         // Télécharger le fichier vers Dropbox
         Storage::disk('dropbox')->put($dropboxPath, file_get_contents($file->path()));
+    }
+    public function uploadToDropbox3($file, $project_id)
+    {
+    try {
+        // Nom du fichier
+        $filename = $file->getClientOriginalName();
+
+        // Chemin dans Dropbox
+        $dropboxPath = '/A' . str_pad($project_id, 4, '0', STR_PAD_LEFT) . '/' . $filename;
+
+        // Télécharger le fichier vers Dropbox
+        Storage::disk('dropbox')->put($dropboxPath, file_get_contents($file->path()));
+    } catch (\Exception $e) {
+        throw new \Exception('Erreur lors du téléchargement vers Dropbox : ' . $e->getMessage());
+    }
     }
     
     

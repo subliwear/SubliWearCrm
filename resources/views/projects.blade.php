@@ -8,7 +8,7 @@
   <style>
 /* Style pour le select */
 select[name="manager_id"] {
-    width: 70%;
+    width: 80%;
     padding: 5px 11px;
     margin: 4px 0;
     display: inline-block;
@@ -129,7 +129,11 @@ p#projectId {
                     <th
                     class="px-6 py-3 pl-2 font-bold text-left uppercase align-middle bg-transparent border-b border-gray-200 shadow-none text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">
                     Date création projet</th>
-                    
+                    @if(!auth()->user()->is_customer())
+                     <th
+                      class="px-6 py-3 pl-2 font-bold text-left uppercase align-middle bg-transparent border-b border-gray-200 shadow-none text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">
+                      Date dernier message client</th>
+                    @endif
                 
 
                   <th
@@ -160,7 +164,13 @@ p#projectId {
                   </td>
                   <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
                   <div class="flex px-2 py-1">
+                   @if(!empty($project->uid))
                     <p class="mb-0 text-xs font-semibold leading-tight">{{$project->uid}}</p>
+                   @else
+                     <p>...</p>
+
+                   @endif 
+
                   </div>
                   </td>
                   <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
@@ -255,13 +265,44 @@ p#projectId {
                progress</span>
             </p>
       @endif
+         
                   </td>
-                  <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent" 
-                   @if ($project->created_at->diffInDays(now()) > $options->deadline && !auth()->user()->is_customer()) 
-                      style="background-color: #8B0000; color: white"
-                    @endif>
-                    <p class="mb-0 text-xs font-semibold leading-tight" >{{$project->created_at->format('d/m/Y')}}</p>
-                  </td>
+
+                  
+                          
+                  @php                  
+                        $projectmessages = $projectmessages[$project->customer_id] ?? collect(); // Assurez-vous que $projectmessages est défini pour éviter les erreurs
+                  @endphp
+                 
+                 <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent" 
+                  @if(!auth()->user()->is_customer())
+                      @if(!$projectmessages->isEmpty() && !auth()->user()->is_customer())
+                          @if ($projectmessages->first()->created_at->diffInDays(now()) > $options->deadline && !auth()->user()->is_customer()) 
+                              style="background-color: #8B0000; color: white"
+                          @endif
+                      @elseif ($projectmessages->isEmpty() && !auth()->user()->is_customer())
+                          @if ($project->created_at->diffInDays(now()) > $options->deadline && !auth()->user()->is_customer()) 
+                              style="background-color: #8B0000; color: white"
+                          @endif
+                      @endif
+                  @endif   
+                   >
+                   <p class="mb-0 text-xs font-semibold leading-tight">{{$project->created_at->format('d/m/Y')}}</p>
+                  </td> 
+                
+                @if(!auth()->user()->is_customer())
+                  <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent" >
+                  @if(!$projectmessages->isEmpty() )
+                  <p class="mb-0 text-xs font-semibold leading-tight">{{$projectmessages->first()->created_at}}</p>
+                  @else
+                        <p>....</p>
+                  
+                      
+                  </td> 
+                 @endif 
+                @endif 
+
+                
 
 
 
@@ -296,8 +337,10 @@ p#projectId {
                       <td ></td>
                       <td ></td>
                       <td ></td>
-                      <td  id="totalCell" ></td>
+                      
                       <td ></td>
+                      <td  id="totalCell" ></td>
+                      <td></td>
                   </tr>
               </tfoot>
             @endif 

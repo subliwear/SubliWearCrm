@@ -14,6 +14,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\DiscountController;
 
 use App\Http\Controllers\OptionController;
+use App\Http\Controllers\DropboxController;
 
 /*
 |--------------------------------------------------------------------------
@@ -170,6 +171,9 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/get-image/{projectId}', [UploadController::class, 'getImage']);
+
+Route::get('/dropbox/authorize', [DropboxController::class, 'redirectToDropbox'])->name('dropbox.authorize');
+Route::get('/dropbox/callback', [DropboxController::class, 'handleDropboxCallback'])->name('dropbox.callback');
 
 
 Route::get('locale/{projectId}', [langController::class,'setLocale']);
