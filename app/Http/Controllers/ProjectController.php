@@ -75,24 +75,32 @@ class ProjectController extends Controller
                 // $managers = Project::select('manager_id')->first();
                 $managers = Manager::with('user')->get();
 
+                $customer_ids = $projects->pluck('customer_id');
+
+                
+
                 $options = Option::first();
 
                 
                 $projectmessages = [];
-                foreach($projects as $project) {
-                    $projectmessages[$project->customer_id] = ProjectMessage::where('is_sent_by_customer', true)
-                        ->where('customer_id', $project->customer_id)
-                        ->orderByDesc('created_at')
-                       ->limit(1)
-                        ->get();
+                
+                
+                $projectmessages = [];
+
+                foreach ($customer_ids as $id) {
+                 
+                 $projectmessages[$id] = ProjectMessage::where('is_sent_by_customer', true)
+                                                ->where('customer_id', $id)
+                                                ->orderByDesc('created_at')
+                                                ->paginate(10);
                 }
 
-
- 
+                $allprojectmessages = ProjectMessage::where('is_sent_by_customer', true)->orderBy('created_at', 'desc')->paginate(10);
+               
                 }
         }
             
-        return view('projects')->with(['projects'=>$projects , 'managers' => $managers , 'options'=> $options ,'projectmessages' => $projectmessages]);
+        return view('projects')->with(['projects'=>$projects , 'managers' => $managers , 'options'=> $options ,'projectmessages' => $projectmessages , 'allprojectmessages' => $allprojectmessages , 'customer_ids', $customer_ids]);
     }
 
 
